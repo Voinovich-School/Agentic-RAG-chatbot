@@ -138,7 +138,7 @@ async def process_chunk(chunk : str, i : int, url : str):
 		"chunk_size": len(chunk),
 		"url": urlparse(url).path,
 		"source": "pwntools",
-		"crawled_at": datetime.now().isoformat(),
+		"crawled_at": datetime.datetime.now().isoformat(),
 	}
 
 	return ProcessedChunk(
@@ -151,7 +151,7 @@ async def process_chunk(chunk : str, i : int, url : str):
 		embedding = embedding
 	)
 
-def store_chunk(chunk : ProcessedChunk):
+async def store_chunk(chunk : ProcessedChunk):
 	"""Insert a procssed chunk into Supabase"""
 	try:
 		data = {
@@ -177,7 +177,7 @@ async def process_url(result : str, url : str):
 	#print(chunks)
 	chunks = [process_chunk(chunk, i, url) for i, chunk in enumerate(chunks)]
 	processed_chunks = await asyncio.gather(*chunks)
-	print(processed_chunks)
+	#print(processed_chunks)
 
 	stored_chunks = [store_chunk(chunk) for chunk in processed_chunks]
 	await asyncio.gather(*stored_chunks)
